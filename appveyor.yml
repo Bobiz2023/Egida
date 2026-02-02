@@ -1,0 +1,34 @@
+version: 1.0.{build}
+image: Visual Studio 2022
+
+install:
+  - choco install windowsdriverkit11 -y
+
+build_script:
+  - msbuild Egida.sln /p:Configuration=Release /p:Platform=x64 /verbosity:minimal
+
+artifacts:
+  - path: x64\Release\Egida.sys
+    name: EgidaDriver
+  - path: x64\Release\Egida.inf
+    name: EgidaInf
+```
+
+6. **Scroll down and click "Commit new file"**
+
+## **After committing:**
+
+Your repo structure should look like this:
+```
+github.com/Bobiz2023/egida/
+├── appveyor.yml          ← YOU JUST ADDED THIS
+├── Egida.sln
+├── Egida.vcxproj
+├── Egida.vcxproj.filters
+├── Egida.inf
+├── LICENSE.txt
+└── src/
+    ├── Common/
+    ├── Core/
+    ├── Modules/
+    └── Utils/
