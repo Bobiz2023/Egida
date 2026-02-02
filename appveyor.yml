@@ -1,19 +1,21 @@
 version: 1.0.{build}
-image: Visual Studio 2022
+image: Visual Studio 2019
 
 install:
   - choco install windows-sdk-10-version-2004-all -y
-  - choco install windowsdriverkit10 -y
+  - choco install windowsdriverkit10 -y --ignore-checksums
 
 before_build:
   - nuget restore Egida.sln
 
-build:
-  project: Egida.sln
-  verbosity: minimal
-
-configuration: Release
-platform: x64
+build_script:
+  - msbuild Egida.sln /p:Configuration=Release /p:Platform=x64 /p:PlatformToolset=WindowsKernelModeDriver10.0 /verbosity:minimal
 
 artifacts:
   - path: x64\Release\Egida.sys
+    name: EgidaDriver
+  - path: x64\Release\Egida.inf
+    name: EgidaInf
+
+on_failure:
+  - dir x64\Release /s
