@@ -1,0 +1,33 @@
+name: Build Egida Driver
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-2022
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1.1
+    
+    - name: Setup NuGet
+      uses: nuget/setup-nuget@v1
+    
+    - name: Install Windows Driver Kit
+      run: |
+        choco install windowsdriverkit11 -y
+        
+    - name: Build Driver
+      run: |
+        msbuild Egida.sln /p:Configuration=Release /p:Platform=x64
+        
+    - name: Upload Compiled Driver
+      uses: actions/upload-artifact@v3
+      with:
+        name: egida-driver
+        path: x64/Release/Egida.sys
